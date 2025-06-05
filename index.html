@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phrase Forge 1: Transformations</title>
+  
+  <!-- Google Font and main stylesheet -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
+  <style>
+    /*— Restoring the centered header from your original model —*/
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #e0e0e0;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    .header-container {
+      text-align: center;
+      margin-bottom: 30px;
+      position: relative;       /* for absolute‐positioned images */
+      padding-bottom: 20px;
+      border-bottom: 2px solid #ccc;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .header-container h1 {
+      color: #004d99;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .credit-line {
+      font-size: 0.9em;
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    .teacher-image {
+      position: absolute;
+      top: 0;
+      left: 20px;      /* matches original positioning */
+      height: 80px;    /* original size */
+      width: auto;
+    }
+
+    .watching-text-image {
+      position: absolute;
+      top: 0;
+      right: 20px;     /* matches original positioning */
+      height: 80px;    /* original size */
+      width: auto;
+    }
+
+    /*— Override only the screen container to sit below the header (centered) —*/
+    .screen {
+      display: flex;
+      max-width: 1200px;
+      width: 100%;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    /* Everything else (instructions box, example, controls, sidebar, etc.) is pulled in from style.css */
+  </style>
+</head>
+
+<body>
+  <!-- =========================
+       Header (centered)
+       ========================= -->
+  <div class="header-container">
+    <h1>Phrase Forge </h1>
+
+    <div class="credit-line">
+      Created by Panagiotis Domvros 2025 (CC BY-NC)<br>
+      <strong>English Teacher – Teacher Trainer</strong><br>
+      Principal of 1st Middle School of Pylea
+    </div>
+
+    <img src="teacher.png"
+         alt="Teacher Avatar"
+         class="teacher-image">
+
+    <img src="teacher_watching_text.png"
+         alt="Your Teacher is Watching Your Every Move!!!"
+         class="watching-text-image">
+  </div>
+
+  <!-- =========================
+       Main “Game” Screen
+       ========================= -->
+  <div id="gameScreen" class="screen">
+    <div class="main-game-area">
+      <h2 id="exerciseTitle">Sentence Transformations</h2>
+
+      <div class="instructions-box">
+        <p>For the following questions, complete the second sentence so that it has a similar meaning to the first sentence, using the word given.</p>
+        <p>Do not change the word given. You must use between <strong>two</strong> and <strong>five</strong> words, including the word given.</p>
+        <p>Here is an example.</p>
+      </div>
+
+      <!-- Example Section -->
+      <div class="example-section">
+        <p><strong>Example:</strong> Do you mind if I watch you while you paint?</p>
+        <p class="given-word">Word Given: objection</p>
+        <div class="transformation-question">
+          <p>
+            Do you
+            <span class="input-sentence-part"></span>
+            <input
+              type="text"
+              id="exampleInput"
+              class="transformation-input"
+              placeholder="Enter your answer"
+              onkeyup="updateWordCount('exampleInput','exampleWordCount')"
+            >
+            <span class="input-sentence-part"></span>
+            you while you paint?
+          </p>
+          <span class="word-count" id="exampleWordCount">0 words</span>
+          <div class="feedback-line" id="exampleFeedback"></div>
+          <button id="showExampleAnswerBtn" class="show-answer-btn">Show Answer</button>
+        </div>
+      </div>
+
+      <!-- Where the 120 exercises are injected -->
+      <div class="questions-container" id="questionsContainer"></div>
+
+      <!-- Controls: Check / Skip / Next -->
+      <div class="game-controls">
+        <button id="checkAnswersBtn" class="control-btn">Check Answers</button>
+        <button id="skipExerciseBtn" class="control-btn small-btn">Skip Exercise</button>
+        <button id="nextExerciseBtn" class="control-btn" style="display: none;">Next Exercise</button>
+      </div>
+
+      <!-- Overall feedback below each question -->
+      <div class="feedback-message" id="exerciseFeedback"></div>
+
+      <!-- Score & progress summary -->
+      <div class="score-display">
+        Score: <span id="currentScore">0</span> | 
+        Exercises Completed: <span id="exercisesCompleted">0</span> / 
+        <span id="totalExercises">0</span>
+      </div>
+
+      <!-- Dictionary Lookup -->
+      <div id="dictionaryContainer" class="word-lookup-section">
+        <h3>Online Dictionary Lookup</h3>
+        <p class="lookup-instruction">Type a word to search an external dictionary (e.g. Merriam-Webster).</p>
+        <input
+          type="text"
+          id="externalWordLookupInput"
+          placeholder="Enter word to look up"
+        >
+        <button id="searchExternalDictionaryBtn" class="small-btn">Search Dictionary</button>
+        <br><br>
+        <iframe
+          id="dictionaryIframe"
+          src="about:blank"
+          width="100%"
+          height="400px"
+          frameborder="0"
+          style="border: 1px solid #ccc; background-color: #f0f0f0;"
+        ></iframe>
+      </div>
+    </div>
+
+    <!-- Sidebar showing progress for Questions 1 – 120 -->
+    <div class="sidebar">
+      <h2>Exercise Progress</h2>
+      <ul class="exercise-progress-list" id="exerciseProgressList">
+        <!-- Populated dynamically by script.js -->
+      </ul>
+    </div>
+  </div>
+
+  <!-- Success/Fail Sounds (preload) -->
+  <audio id="failSound" src="fail-sound.mp3" preload="auto"></audio>
+  <audio id="successSound" src="success-sound.mp3" preload="auto"></audio>
+
+  <!-- Link to the updated JavaScript file -->
+  <script src="script.js"></script>
+</body>
+</html>
